@@ -10,7 +10,7 @@ mkwind offers a set of tools for building, running, and postprocessing the tasks
 
 ## Documentation
 
-General tutorial for `mkite` and its plugins are available in the [main documentation](https://www.mkite.org).
+General tutorial for `mkite` and its plugins are available in the [main documentation](https://mkite.org).
 Complete API documentation is pending.
 
 ## Installation

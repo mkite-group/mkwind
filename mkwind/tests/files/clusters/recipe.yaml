@@ -1,0 +1,10 @@
+nodes: 1
+tasks_per_node: 8
+walltime: "30:00"
+partition: pdebug
+account: test
+pre_cmd: |
+  module load vasp
+cmd: srun -n$SLURM_NTASKS vasp
+post_cmd: |
+  touch mkwind-complete

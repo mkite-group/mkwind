@@ -1,0 +1,12 @@
+default:
+  nodes: 1
+  tasks_per_node: 36
+  walltime: "24:00:00"
+  partition: pdebug
+  account: test_account
+
+vasp:
+  account: vasp_default
+  pre_cmd: |
+    module load vasp
+  cmd: srun -n$SLURM_NTASKS vasp

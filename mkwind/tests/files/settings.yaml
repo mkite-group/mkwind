@@ -1,0 +1,6 @@
+USER: "user"
+LOG_PATH: "."
+BUILD_CONFIG: ${_self_}/clusters/cluster1.yaml
+ENGINE_LOCAL: ${_self_}/engines/local.yaml
+ENGINE_EXTERNAL: ${_self_}/engines/external.yaml
+ENGINE_ARCHIVE: ${_self_}/engines/archive.yaml

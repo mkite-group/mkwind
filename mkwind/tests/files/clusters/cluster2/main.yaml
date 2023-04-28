@@ -1,0 +1,11 @@
+default:
+  nodes: 1
+  tasks_per_node: 24
+  walltime: "3-00:00:00"
+  partition: partition
+  account: cluster2_account
+
+vasp:
+  pre_cmd: |
+    module load group/vasp
+  cmd: srun -n$SLURM_NTASKS vasp

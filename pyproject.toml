@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mkwind"
+version = "0.1.0"
+description = "mkwind is a job building/submission automator companion to mkite"
+authors = [{name = "Daniel Schwalbe-Koda", email = "dskoda@llnl.gov"}]
+readme = "README.md"
+requires-python = ">=3.8"
+
+[project.scripts]
+wind = "mkwind.cli.wind:wind"
+
+[tool.setuptools]
+packages = ["mkwind"]

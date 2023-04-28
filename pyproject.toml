@@ -9,6 +9,13 @@ description = "mkwind is a job building/submission automator companion to mkite"
 authors = [{name = "Daniel Schwalbe-Koda", email = "dskoda@llnl.gov"}]
 readme = "README.md"
 requires-python = ">=3.8"
+keywords = ["workflow", "materials-science"]
+dependencies = [
+    "click",
+    "pydantic",
+    "freezegun",
+    "jinja2",
+]
 
 [project.scripts]
 wind = "mkwind.cli.wind:wind"

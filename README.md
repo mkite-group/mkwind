@@ -1,5 +1,5 @@
 <div align="center">
-  <img src=docs/_static/mkwind.png width="500"><br>
+  <img src="https://raw.githubusercontent.com/mkite-group/mkwind/main/docs/_static/mkwind.png" width="500"><br>
 </div>
 
 # What is mkwind?
@@ -35,22 +35,6 @@ You can send a pull request or open an issue for this plugin or either of the pa
 When doing so, please adhere to the [Code of Conduct](CODE_OF_CONDUCT.md) in the mkite suite.
 
 The mkite package was created by Daniel Schwalbe-Koda <dskoda@llnl.gov>.
-
-### Citing mkite
-
-If you use mkite in a publication, please cite the following paper:
-
-```bibtex
-@article{mkite2023,
-    title = {mkite: A distributed computing platform for high-throughput materials simulations},
-    author = {Schwalbe-Koda, Daniel},
-    year = {2023},
-    journal = {arXiv:2301.08841},
-    doi = {10.48550/arXiv.2301.08841},
-    url = {https://doi.org/10.48550/arXiv.2301.08841},
-    arxiv={2301.08841},
-}
-```
 
 ## License
 

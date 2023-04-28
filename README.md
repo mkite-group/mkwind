@@ -1,5 +1,5 @@
 <div align="center">
-  <img src=docs/img/mkwind.png width="500"><br>
+  <img src=docs/_static/mkwind.png width="500"><br>
 </div>
 
 # What is mkwind?

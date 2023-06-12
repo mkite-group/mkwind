@@ -68,7 +68,7 @@ class JobDaemon:
 
     def submit_n(self, n_submit: int):
         submitted = []
-        for job_folder in self.consumer.get_n(Status.READY.value, n=n_submit):
+        for key, job_folder in self.consumer.get_n(Status.READY.value, n=n_submit):
             dst = self.change_status(job_folder, Status.READY.value, Status.DOING.value)
             job = os.path.basename(dst)
 

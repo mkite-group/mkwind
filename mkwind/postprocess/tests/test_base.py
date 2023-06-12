@@ -41,10 +41,11 @@ class TestPostprocessor(ut.TestCase):
             archive_engine=arch,
         )
 
-        os.mkdir(f"done/{self.jobfolder}")
-        self.info.to_json(f"done/{self.jobfolder}/jobresults.json")
+        queue_done = src.format_queue_name(Status.DONE.value)
+        os.mkdir(f"{queue_done}/{self.jobfolder}")
+        self.info.to_json(f"{queue_done}/{self.jobfolder}/jobresults.json")
 
-        os.mkdir(f"done/invalid_folder")
+        os.mkdir(f"{queue_done}/invalid_folder")
 
         return postproc
 
@@ -57,7 +58,7 @@ class TestPostprocessor(ut.TestCase):
 
     def get_folder(self, postproc: JobPostprocessor, folder: str):
         return os.path.join(
-            postproc.src.abspath(Status.DONE.value),
+            postproc.src.get_queue_path(Status.DONE.value),
             folder,
         )
 
@@ -122,7 +123,7 @@ class TestPostprocessor(ut.TestCase):
 
         done, errors = postproc.postprocess_all()
 
-        expected_done = [self.info.job["uuid"]]
+        expected_done = [self.jobfolder]
         self.assertEqual(done, expected_done)
 
         expected_errors = ["invalid_folder"]

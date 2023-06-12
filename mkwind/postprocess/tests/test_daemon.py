@@ -46,7 +46,7 @@ class TestDaemon(ut.TestCase):
         self.assertEqual(done_folders, [])
 
         parsing_folders = [
-            fname.strip(".json")
+            "recipe_" + fname.split("-")[0]
             for fname in daemon.postproc.dst.list_queue(Status.PARSING.value)
         ]
         self.assertEqual(parsing_folders, done)

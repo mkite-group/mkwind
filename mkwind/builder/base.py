@@ -55,12 +55,13 @@ class JobBuilder:
 
         for queue in self.get_src_queues():
             while n < max_build:
-                info = self.src.get_info(queue)
+                key, info = self.src.get_info(queue)
                 if info is None:
                     break
 
                 job_folder = self.build_job(info)
                 built.append(job_folder)
+                self.src.delete(key)
                 n += 1
 
         return built

@@ -21,6 +21,14 @@ SETTINGS = resource_filename("mkwind.tests.files", "settings.yaml")
 
 
 class TestBuilder(ut.TestCase):
+    def setUp(self):
+        self.info = JobInfo.from_json(INFO_PATH)
+        self.info.recipe["package"] = "vasp"
+        self.info.recipe["name"] = "vasp.pbe.relax"
+
+        self.template = Template.from_name("slurm.sh")
+        self.settings = EnvSettings.from_file(SETTINGS)
+
     def get_builder(self, explicit_config: bool = False):
         src = instantiate_from_path(
             self.settings.ENGINE_EXTERNAL,
@@ -41,19 +49,11 @@ class TestBuilder(ut.TestCase):
         )
         return builder
 
-    def setUp(self):
-        self.info = JobInfo.from_json(INFO_PATH)
-        self.info.recipe["package"] = "vasp"
-        self.info.recipe["name"] = "vasp.pbe.relax"
-
-        self.template = Template.from_name("slurm.sh")
-        self.settings = EnvSettings.from_file(SETTINGS)
-
     @run_in_tempdir
     def test_setup_queues(self):
         builder = self.get_builder()
         dirs = sorted(os.listdir("."))
-        expected = ["building", "ready"]
+        expected = ["building", "queue:ready"]
 
         self.assertEqual(dirs, expected)
 
@@ -126,9 +126,11 @@ class TestBuilder(ut.TestCase):
         builder = self.get_builder(explicit_config=True)
         recipe = self.info.recipe["name"]
         builder.src.add_queue(recipe)
-        self.info.to_json(f"building/{recipe}/jobinfo.json")
 
-        to_build = os.listdir(f"building/{recipe}")
+        recipe_queue = builder.src.format_queue_name(recipe)
+        self.info.to_json(f"building/{recipe_queue}/jobinfo.json")
+
+        to_build = os.listdir(f"building/{recipe_queue}")
         self.assertEqual(to_build, ["jobinfo.json"])
 
         built = builder.build_all()
@@ -141,9 +143,10 @@ class TestBuilder(ut.TestCase):
         builder.src.add_queue(recipe)
         self.info.recipe["name"] = recipe
 
-        self.info.to_json(f"building/{recipe}/jobinfo.json")
+        recipe_queue = builder.src.format_queue_name(recipe)
+        self.info.to_json(f"building/{recipe_queue}/jobinfo.json")
 
-        to_build = os.listdir(f"building/{recipe}")
+        to_build = os.listdir(f"building/{recipe_queue}")
         self.assertEqual(to_build, ["jobinfo.json"])
 
         built = builder.build_all()

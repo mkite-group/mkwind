@@ -58,7 +58,7 @@ class JobPostprocessor:
     def postprocess_job(self, folder: os.PathLike, delete: bool = True):
         info = self.get_info(folder)
         jobid = self.get_jobid(info, folder)
-        out = self.push_info_to_parsing(info, name=jobid)
+        out = self.push_info_to_parsing(info)
         self.compress_folder(folder, name=jobid)
 
         if delete:
@@ -75,8 +75,8 @@ class JobPostprocessor:
 
         return os.path.basename(folder)
 
-    def push_info_to_parsing(self, info: JobResults, name):
-        return self.dst.push_info(Status.PARSING.value, info, name=name)
+    def push_info_to_parsing(self, info: JobResults):
+        return self.dst.push_info(Status.PARSING.value, info, status=Status.PARSING.value)
 
     def compress_folder(
         self,

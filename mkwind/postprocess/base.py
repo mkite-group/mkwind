@@ -30,15 +30,14 @@ class JobPostprocessor:
         done = []
         errors = []
 
-        for folder in self.src.get_n(Status.DONE.value):
-            fname = os.path.basename(folder)
+        for key, folder in self.src.get_n(Status.DONE.value):
             try:
                 jobid = self.postprocess_job(folder)
-                done.append(jobid)
+                done.append(key)
 
             except PostprocessError as e:
                 self.on_error(folder)
-                errors.append(fname)
+                errors.append(key)
 
         return done, errors
 

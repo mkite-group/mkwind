@@ -20,6 +20,9 @@ class JobDaemon:
     ):
         self.producer = instantiate_from_path(settings.ENGINE_LOCAL, role=EngineRoles.producer)
         self.consumer = instantiate_from_path(settings.ENGINE_LOCAL, role=EngineRoles.consumer)
+
+        self.producer.move = True
+
         for q in QUEUES:
             self.producer.add_queue(q)
 

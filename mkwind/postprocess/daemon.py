@@ -47,7 +47,7 @@ class PostprocessDaemon:
         dst = instantiate_from_path(settings.ENGINE_EXTERNAL, role=EngineRoles.producer)
         dst.add_queue(Status.PARSING)
 
-        err = instantiate_from_path(settings.ENGINE_EXTERNAL, role=EngineRoles.producer)
+        err = instantiate_from_path(settings.ENGINE_LOCAL, role=EngineRoles.producer)
         err.add_queue(Status.ERROR)
 
         arch = instantiate_from_path(settings.ENGINE_ARCHIVE, role=EngineRoles.producer)

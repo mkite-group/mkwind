@@ -1,17 +1,20 @@
 import os
-from pathlib import Path
-from pkg_resources import resource_filename
-from mkite_core.external import load_config
-
 import unittest as ut
+from pathlib import Path
 from unittest.mock import patch
-from freezegun import freeze_time
 
-from mkwind.user import EnvSettings
-from mkite_core.models import JobInfo, JobResults
-from mkite_engines import Status, EngineRoles, instantiate_from_path
-from mkwind.postprocess.base import JobPostprocessor, PostprocessError
+from freezegun import freeze_time
+from mkite_core.external import load_config
+from mkite_core.models import JobInfo
+from mkite_core.models import JobResults
 from mkite_core.tests.tempdirs import run_in_tempdir
+from mkite_engines import EngineRoles
+from mkite_engines import instantiate_from_path
+from mkite_engines import Status
+from mkwind.postprocess.base import JobPostprocessor
+from mkwind.postprocess.base import PostprocessError
+from mkwind.user import EnvSettings
+from pkg_resources import resource_filename
 
 
 INFO_PATH = resource_filename("mkwind.tests.files", "jobresults.json")
@@ -63,16 +66,16 @@ class TestPostprocessor(ut.TestCase):
         )
 
     @run_in_tempdir
-    def test_get_info(self):
+    def test_get_jobresults(self):
         postproc = self.get_postproc()
 
         good_path = self.get_folder(postproc, self.jobfolder)
-        info = postproc.get_info(good_path)
+        info = postproc.get_jobresults(good_path)
         self.assertIsInstance(info, JobResults)
 
         bad_path = self.get_folder(postproc, "invalid_folder")
         with self.assertRaises(PostprocessError):
-            postproc.get_info(bad_path)
+            postproc.get_jobresults(bad_path)
 
     @run_in_tempdir
     def test_get_jobid(self):

@@ -3,8 +3,11 @@ import shutil
 import tarfile
 from tempfile import TemporaryDirectory
 
+from mkite_core.models import JobInfo
 from mkite_core.models import JobResults
-from mkite_engines import BaseProducer, BaseConsumer, Status
+from mkite_engines import BaseConsumer
+from mkite_engines import BaseProducer
+from mkite_engines import Status
 
 
 class PostprocessError(Exception):
@@ -41,7 +44,20 @@ class JobPostprocessor:
 
         return done, errors
 
-    def get_info(self, folder: os.PathLike):
+    def get_jobinfo(self, folder: os.PathLike):
+        info_file = os.path.join(folder, JobInfo.file_name())
+
+        if not os.path.exists(info_file):
+            raise PostprocessError(f"JobInfo {JobInfo.file_name()} does not exist")
+
+        try:
+            info = JobInfo.from_json(info_file)
+            return info
+
+        except Exception as e:
+            raise PostprocessError(f"Could not decode JobInfo. Error: {e}")
+
+    def get_jobresults(self, folder: os.PathLike):
         results_file = os.path.join(folder, JobResults.file_name())
 
         if not os.path.exists(results_file):
@@ -52,12 +68,12 @@ class JobPostprocessor:
             return info
 
         except Exception as e:
-            raise PostprocessError("Could not decode JobResults. Error: {e}")
+            raise PostprocessError(f"Could not decode JobResults. Error: {e}")
 
     def postprocess_job(self, folder: os.PathLike, delete: bool = True):
-        info = self.get_info(folder)
+        info = self.get_jobresults(folder)
         jobid = self.get_jobid(info, folder)
-        out = self.push_info_to_parsing(info)
+        self.push_info_to_parsing(info)
         self.compress_folder(folder, name=jobid)
 
         if delete:
@@ -75,14 +91,15 @@ class JobPostprocessor:
         return os.path.basename(folder)
 
     def push_info_to_parsing(self, info: JobResults):
-        return self.dst.push_info(Status.PARSING.value, info, status=Status.PARSING.value)
+        return self.dst.push_info(
+            Status.PARSING.value, info, status=Status.PARSING.value
+        )
 
     def compress_folder(
         self,
         folder: os.PathLike,
         name: str = None,
     ) -> os.PathLike:
-
         if name is None:
             name = os.path.basename(folder)
 
@@ -101,4 +118,16 @@ class JobPostprocessor:
         return tar_path
 
     def on_error(self, folder: os.PathLike):
-        return self.err.push(Status.ERROR.value, folder)
+        try:
+            info = self.get_jobinfo(folder)
+
+            # self.dst is the main engine
+            self.dst.push_info(Status.ERROR.value, info, status=Status.ERROR.value)
+
+            # self.err is where the error folders are stored locally
+            self.err.push(Status.ERROR.value, folder)
+
+        except PostprocessError:
+            pass
+
+        return

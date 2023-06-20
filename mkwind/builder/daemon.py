@@ -47,7 +47,7 @@ class BuilderDaemon:
         cls,
         settings: EnvSettings,
         logger_stdout: bool = True,
-        explicit_config: bool = False,
+        explicit_config: bool = True,
     ):
         src = instantiate_from_path(settings.ENGINE_EXTERNAL, role=EngineRoles.consumer)
         dst = instantiate_from_path(settings.ENGINE_LOCAL, role=EngineRoles.producer)

@@ -22,7 +22,7 @@ class JobBuilder:
         dst_engine: LocalProducer,
         settings: EnvSettings,
         template: Template,
-        explicit_config: bool = False,
+        explicit_config: bool = True,
     ):
         self.src = src_engine
         self.dst = dst_engine

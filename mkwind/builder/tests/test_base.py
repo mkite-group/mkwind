@@ -53,7 +53,7 @@ class TestBuilder(ut.TestCase):
     def test_setup_queues(self):
         builder = self.get_builder()
         dirs = sorted(os.listdir("."))
-        expected = ["building", "queue:ready"]
+        expected = ["building", "queue-ready"]
 
         self.assertEqual(dirs, expected)
 

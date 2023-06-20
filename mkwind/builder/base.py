@@ -43,11 +43,11 @@ class JobBuilder:
         return [q for q in queues if self.building_is_allowed(q)]
 
     def building_is_allowed(self, recipe: str) -> bool:
-        if not self.explicit_config:
-            return True
+        if self.explicit_config:
+            return self.recipe_settings.config_has_recipe(recipe)
 
-        has_recipe = self.recipe_settings.config_has_recipe(recipe)
-        return has_recipe
+        # allows building as long as it is not a queue name
+        return not Status.has_value(recipe)
 
     def build_all(self, max_build: int = 1000):
         n = 0

@@ -53,6 +53,9 @@ class JobBuilder:
         n = 0
         built = []
 
+        import ipdb
+
+        ipdb.set_trace()
         for queue in self.get_src_queues():
             while n < max_build:
                 key, info = self.src.get_info(queue)

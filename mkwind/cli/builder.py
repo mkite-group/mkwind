@@ -22,18 +22,18 @@ from mkwind.user.settings import get_settings
     help="number of seconds to sleep between runs of the daemon",
 )
 @click.option(
-    "-e",
-    "--explicit",
+    "-m",
+    "--implicit",
     is_flag=True,
     default=False,
-    help="If True, requires recipe config/package to be explicit in \
-        the config file. This helps separating which recipes will be \
-        built in different machines.",
+    help="If True, all queues are built regardless of the recipes in \
+        the config file. An explicit config helps separating which \
+        recipes will be built in different machines.",
 )
-def build(settings, sleep, explicit=False):
+def build(settings, sleep, implicit=True):
     daemon = BuilderDaemon.from_settings(
         settings=get_settings(settings),
-        explicit_config=explicit,
+        explicit_config=(not implicit),
     )
 
     if sleep <= 0:

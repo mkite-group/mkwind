@@ -5,6 +5,7 @@ from tempfile import TemporaryDirectory
 
 from mkite_core.models import JobInfo
 from mkite_core.models import JobResults
+from mkite_core.plugins import get_recipe
 from mkite_engines import BaseConsumer
 from mkite_engines import BaseProducer
 from mkite_engines import Status
@@ -117,17 +118,37 @@ class JobPostprocessor:
 
         return tar_path
 
+    def restart_job(self, info: JobInfo) -> bool:
+        recipe_name = info.recipe.get("name")
+        if recipe_name is None:
+            raise PostprocessError("JobInfo does not contain a recipe name")
+
+        try:
+            RecipeCls = get_recipe(recipe_name).load()
+        except Exception as e:
+            raise PostprocessError(f"Failed to load recipe: {e}")
+
+        recipe = RecipeCls(info)
+        try:
+            new_info = recipe.handle_errors()
+        except Exception as e:
+            raise PostprocessError(
+                f"Failed to handle errors for recipe {recipe_name}: {e}"
+            )
+
+        self.dst.push_info(recipe_name, new_info, status=Status.READY.value)
+
     def on_error(self, folder: os.PathLike):
         try:
             info = self.get_jobinfo(folder)
+            self.restart_job(info)
 
-            # self.dst is the main engine
+        except PostprocessError as e:
+            # self.dst is the main engine (e.g., Redis)
             self.dst.push_info(Status.ERROR.value, info, status=Status.ERROR.value)
 
+        finally:
             # self.err is where the error folders are stored locally
             self.err.push(Status.ERROR.value, folder)
-
-        except PostprocessError:
-            pass
 
         return

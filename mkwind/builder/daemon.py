@@ -48,6 +48,7 @@ class BuilderDaemon:
         settings: EnvSettings,
         logger_stdout: bool = True,
         explicit_config: bool = True,
+        delete_on_build: bool = False,
     ):
         src = instantiate_from_path(settings.ENGINE_EXTERNAL, role=EngineRoles.consumer)
         dst = instantiate_from_path(settings.ENGINE_LOCAL, role=EngineRoles.producer)
@@ -61,5 +62,6 @@ class BuilderDaemon:
             settings=settings,
             template=template,
             explicit_config=explicit_config,
+            delete_on_build=delete_on_build,
         )
         return cls(builder, settings, logger_stdout=logger_stdout)

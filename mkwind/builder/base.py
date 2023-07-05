@@ -23,12 +23,14 @@ class JobBuilder:
         settings: EnvSettings,
         template: Template,
         explicit_config: bool = True,
+        delete_on_build: bool = False,
     ):
         self.src = src_engine
         self.dst = dst_engine
         self.template = template
         self.explicit_config = explicit_config
         self.recipe_settings = AllJobSettings.from_file(settings.BUILD_CONFIG)
+        self.delete_on_build = delete_on_build
 
     def get_ready(self):
         ready_jobs = self.dst.list_all_queues()
@@ -61,7 +63,9 @@ class JobBuilder:
 
                 job_folder = self.build_job(info)
                 built.append(job_folder)
-                self.src.delete(key)
+
+                if self.delete_on_build:
+                    self.src.delete(key)
                 n += 1
 
         return built

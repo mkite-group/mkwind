@@ -33,6 +33,7 @@ class TestDaemon(ut.TestCase):
         return BuilderDaemon.from_settings(
             settings=settings,
             logger_stdout=False,
+            delete_on_build=True,
         )
 
     @run_in_tempdir

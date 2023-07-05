@@ -1,16 +1,13 @@
 import os
-from pathlib import Path
 from pkg_resources import resource_filename
-from mkite_core.external import load_config
 
 import unittest as ut
-from unittest.mock import patch
 from freezegun import freeze_time
 
 from mkite_core.models import JobInfo
 from mkwind.templates import Template
 from mkwind.user import EnvSettings
-from mkite_engines import LocalConsumer, LocalProducer, Status, EngineRoles, instantiate_from_path
+from mkite_engines import LocalConsumer, Status, EngineRoles, instantiate_from_path
 from mkwind.builder import JobBuilder, JobSettings
 from mkite_core.tests.tempdirs import run_in_tempdir
 
@@ -29,7 +26,7 @@ class TestBuilder(ut.TestCase):
         self.template = Template.from_name("slurm.sh")
         self.settings = EnvSettings.from_file(SETTINGS)
 
-    def get_builder(self, explicit_config: bool = False):
+    def get_builder(self, explicit_config: bool = False, delete_on_build: bool = True):
         src = instantiate_from_path(
             self.settings.ENGINE_EXTERNAL,
             role=EngineRoles.consumer,
@@ -46,6 +43,7 @@ class TestBuilder(ut.TestCase):
             settings=self.settings,
             template=self.template,
             explicit_config=explicit_config,
+            delete_on_build=delete_on_build,
         )
         return builder
 
@@ -83,9 +81,7 @@ class TestBuilder(ut.TestCase):
     @run_in_tempdir
     def test_write_template(self):
         builder = self.get_builder()
-        job_folder = os.path.join(
-            builder.src.root_path, "test_job"
-        )
+        job_folder = os.path.join(builder.src.root_path, "test_job")
         os.mkdir(job_folder)
         settings = JobSettings.from_file_choices(
             BUILD_CONFIG, choice="vasp", with_default=True
@@ -135,6 +131,24 @@ class TestBuilder(ut.TestCase):
 
         built = builder.build_all()
         self.assertEqual(len(built), 1)
+
+    @run_in_tempdir
+    def test_delete_on_build(self):
+        builder = self.get_builder(explicit_config=True, delete_on_build=False)
+        recipe = self.info.recipe["name"]
+        builder.src.add_queue(recipe)
+
+        recipe_queue = builder.src.format_queue_name(recipe)
+        self.info.to_json(f"building/{recipe_queue}/jobinfo.json")
+
+        to_build = os.listdir(f"building/{recipe_queue}")
+        self.assertEqual(to_build, ["jobinfo.json"])
+
+        built = builder.build_all(max_build=1)
+        self.assertEqual(len(built), 1)
+
+        to_build = os.listdir(f"building/{recipe_queue}")
+        self.assertEqual(to_build, ["jobinfo.json"])
 
     @run_in_tempdir
     def test_build_explicit_not_passing(self):

@@ -130,7 +130,7 @@ class JobPostprocessor:
 
         recipe = RecipeCls(info)
         try:
-            new_info = recipe.handle_errors()
+            new_info = recipe.handle_errors(delete_scratch=True)
         except Exception as e:
             raise PostprocessError(
                 f"Failed to handle errors for recipe {recipe_name}: {e}"
@@ -144,6 +144,7 @@ class JobPostprocessor:
             self.restart_job(info)
 
         except PostprocessError as e:
+            print(e)
             # self.dst is the main engine (e.g., Redis)
             self.dst.push_info(Status.ERROR.value, info, status=Status.ERROR.value)
 

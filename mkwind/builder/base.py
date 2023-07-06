@@ -33,7 +33,7 @@ class JobBuilder:
         self.delete_on_build = delete_on_build
 
     def get_ready(self):
-        ready_jobs = self.dst.list_all_queues()
+        ready_jobs = self.dst.list_queue(Status.READY.value)
         return len(ready_jobs)
 
     def get_src_queues(self, allowed_only=True):

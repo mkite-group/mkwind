@@ -1,6 +1,6 @@
 import os
 import shutil
-import tarfile
+import subprocess
 from tempfile import TemporaryDirectory
 
 from mkite_core.models import JobInfo
@@ -100,6 +100,7 @@ class JobPostprocessor:
         self,
         folder: os.PathLike,
         name: str = None,
+        compresslevel: int = 6,
     ) -> os.PathLike:
         if name is None:
             name = os.path.basename(folder)
@@ -111,8 +112,7 @@ class JobPostprocessor:
 
         with TemporaryDirectory(dir=base_path) as tmp:
             tar_path = os.path.join(tmp, name)
-            with tarfile.open(tar_path, "w:gz") as tar:
-                tar.add(folder, arcname=name)
+            compress_folder(folder, tar_path)
 
             self.archive.push(Status.ARCHIVE.value, tar_path)
 
@@ -153,3 +153,30 @@ class JobPostprocessor:
             self.err.push(Status.ERROR.value, folder)
 
         return
+
+
+def compress_folder(src, dst):
+    """Compresses the source folder src into the tar.gz file
+    dst using the tar command"""
+    src = os.path.abspath(src)
+    base = os.path.dirname(src)
+    name = os.path.basename(src)
+    cmd = [
+        "tar",
+        "-czf",
+        dst,
+        "-C",
+        base,
+        name,
+    ]
+    return subprocess.run(cmd)
+
+
+def compress_folder_linux(src, dst):
+    """Compresses the source folder src into the tar.gz file
+    dst using the tarfile library. Can be extremely slow for
+    larger tar files."""
+    import tarfile
+
+    with tarfile.open(dst, "w:gz", compresslevel=6) as tar:
+        tar.add(src, arcname=os.path.basename(dst))

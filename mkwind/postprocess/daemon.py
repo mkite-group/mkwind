@@ -39,7 +39,7 @@ class PostprocessDaemon:
         cls,
         settings: EnvSettings,
         compress: bool = True,
-        allow_restart: bool = True,
+        allow_restart: bool = False,
         logger_stdout: bool = True,
     ):
         src = instantiate_from_path(settings.ENGINE_LOCAL, role=EngineRoles.consumer)

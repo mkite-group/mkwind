@@ -23,7 +23,7 @@ class JobPostprocessor:
         error_engine: BaseProducer,
         archive_engine: BaseProducer,
         compress: bool = True,
-        allow_restart: bool = True,
+        allow_restart: bool = False,
     ):
         self.src = src_engine
         self.dst = dst_engine

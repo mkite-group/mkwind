@@ -41,7 +41,7 @@ class JobPostprocessor:
                 jobid = self.postprocess_job(folder)
                 done.append(key)
 
-            except PostprocessError as e:
+            except (PostprocessError, FileNotFoundError) as e:
                 self.on_error(folder)
                 errors.append(key)
 
@@ -51,7 +51,7 @@ class JobPostprocessor:
         info_file = os.path.join(folder, JobInfo.file_name())
 
         if not os.path.exists(info_file):
-            raise PostprocessError(f"JobInfo {JobInfo.file_name()} does not exist")
+            raise FileNotFoundError(f"JobInfo {JobInfo.file_name()} does not exist")
 
         try:
             info = JobInfo.from_json(info_file)
@@ -64,7 +64,7 @@ class JobPostprocessor:
         results_file = os.path.join(folder, JobResults.file_name())
 
         if not os.path.exists(results_file):
-            raise PostprocessError(f"Results {JobResults.file_name()} does not exist")
+            raise FileNotFoundError(f"Results {JobResults.file_name()} does not exist")
 
         try:
             info = JobResults.from_json(results_file)
@@ -148,6 +148,10 @@ class JobPostprocessor:
                 self.restart_job(info)
             else:
                 self.dst.push_info(Status.ERROR.value, info, status=Status.ERROR.value)
+
+        except FileNotFoundError as e:
+            # cannot get the JobInfo from the folder
+            print(e)
 
         except PostprocessError as e:
             print(e)

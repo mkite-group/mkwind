@@ -74,7 +74,7 @@ class TestPostprocessor(ut.TestCase):
         self.assertIsInstance(info, JobResults)
 
         bad_path = self.get_folder(postproc, "invalid_folder")
-        with self.assertRaises(PostprocessError):
+        with self.assertRaises(FileNotFoundError):
             postproc.get_jobresults(bad_path)
 
     @run_in_tempdir

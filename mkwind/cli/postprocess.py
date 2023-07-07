@@ -21,8 +21,18 @@ from mkwind.postprocess import PostprocessDaemon
     default=60,
     help="number of seconds to sleep between runs of the daemon",
 )
-def postprocess(settings, sleep):
-    daemon = PostprocessDaemon.from_settings(get_settings(settings))
+@click.option(
+    "-r",
+    "--allow_restart",
+    is_flag=True,
+    default=False,
+    help="If set, do not postprocess errors",
+)
+def postprocess(settings, sleep, allow_restart):
+    daemon = PostprocessDaemon.from_settings(
+        settings=get_settings(settings),
+        allow_restart=allow_restart,
+    )
 
     if sleep <= 0:
         daemon.log("running only once, as sleep <= 0")

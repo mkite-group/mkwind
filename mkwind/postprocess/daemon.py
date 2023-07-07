@@ -39,6 +39,7 @@ class PostprocessDaemon:
         cls,
         settings: EnvSettings,
         compress: bool = True,
+        allow_restart: bool = True,
         logger_stdout: bool = True,
     ):
         src = instantiate_from_path(settings.ENGINE_LOCAL, role=EngineRoles.consumer)
@@ -59,5 +60,6 @@ class PostprocessDaemon:
             error_engine=err,
             archive_engine=arch,
             compress=compress,
+            allow_restart=allow_restart,
         )
         return cls(postproc, settings, logger_stdout=logger_stdout)

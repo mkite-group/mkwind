@@ -23,12 +23,14 @@ class JobPostprocessor:
         error_engine: BaseProducer,
         archive_engine: BaseProducer,
         compress: bool = True,
+        allow_restart: bool = True,
     ):
         self.src = src_engine
         self.dst = dst_engine
         self.err = error_engine
         self.archive = archive_engine
         self.compress = compress
+        self.allow_restart = allow_restart
 
     def postprocess_all(self):
         done = []
@@ -130,10 +132,10 @@ class JobPostprocessor:
 
         recipe = RecipeCls(info)
         try:
-            new_info = recipe.handle_errors(delete_scratch=True)
+            new_info = recipe.restart_job(delete_scratch=True)
         except Exception as e:
             raise PostprocessError(
-                f"Failed to handle errors for recipe {recipe_name}: {e}"
+                f"Failed to restart job for recipe {recipe_name}: {e}"
             )
 
         self.dst.push_info(recipe_name, new_info, status=Status.READY.value)
@@ -141,7 +143,11 @@ class JobPostprocessor:
     def on_error(self, folder: os.PathLike):
         try:
             info = self.get_jobinfo(folder)
-            self.restart_job(info)
+
+            if self.allow_restart:
+                self.restart_job(info)
+            else:
+                self.dst.push_info(Status.ERROR.value, info, status=Status.ERROR.value)
 
         except PostprocessError as e:
             print(e)

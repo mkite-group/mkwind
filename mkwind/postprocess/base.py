@@ -172,7 +172,7 @@ def compress_folder(src, dst):
     return subprocess.run(cmd)
 
 
-def compress_folder_linux(src, dst):
+def compress_folder_python(src, dst):
     """Compresses the source folder src into the tar.gz file
     dst using the tarfile library. Can be extremely slow for
     larger tar files."""

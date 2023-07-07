@@ -26,9 +26,9 @@ from mkwind.postprocess import PostprocessDaemon
     "--allow_restart",
     is_flag=True,
     default=False,
-    help="If set, do not postprocess errors",
+    help="If set, allows restarting jobs on postprocessing",
 )
-def postprocess(settings, sleep, allow_restart):
+def postprocess(settings, sleep, allow_restart=False):
     daemon = PostprocessDaemon.from_settings(
         settings=get_settings(settings),
         allow_restart=allow_restart,

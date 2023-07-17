@@ -132,7 +132,7 @@ class JobPostprocessor:
 
         recipe = RecipeCls(info)
         try:
-            new_info = recipe.restart_job(delete_scratch=True)
+            new_info = recipe.handle_errors(delete_scratch=True)
         except Exception as e:
             raise PostprocessError(
                 f"Failed to restart job for recipe {recipe_name}: {e}"

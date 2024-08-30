@@ -4,7 +4,8 @@ from typing import List
 
 from mkwind.user import EnvSettings, Logger
 from mkwind.schedulers import Scheduler, SchedulerJob, SchedulerError, SCHEDULERS_CLS
-from mkite_engines import Status, EngineRoles, instantiate_from_path
+from mkite_core.models import Status
+from mkite_engines import EngineRoles, instantiate_from_path
 
 
 QUEUES = [Status.READY.value, Status.DOING.value, Status.DONE.value, Status.ERROR.value]

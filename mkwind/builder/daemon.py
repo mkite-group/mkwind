@@ -1,6 +1,7 @@
 import os
 
-from mkite_engines import Status, EngineRoles, instantiate_from_path
+from mkite_core.models import Status
+from mkite_engines import EngineRoles, instantiate_from_path
 from mkwind.user import EnvSettings, Logger
 from mkwind.templates import Template
 

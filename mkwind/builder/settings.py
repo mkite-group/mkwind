@@ -4,7 +4,8 @@ from typing import List, Dict
 from pathlib import Path
 from collections.abc import Mapping
 from mkite_core.external import load_config
-from pydantic import BaseSettings, Field, DirectoryPath, FilePath
+from pydantic import Field, DirectoryPath, FilePath
+from pydantic_settings import BaseSettings
 
 from mkite_core.models import JobInfo
 

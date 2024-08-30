@@ -6,8 +6,8 @@ from pkg_resources import resource_filename
 
 from mkwind.user import EnvSettings
 from mkwind.templates import Template
-from mkite_engines import Status
 from mkwind.builder.daemon import BuilderDaemon
+from mkite_core.models import Status
 from mkite_core.tests.tempdirs import run_in_tempdir
 from mkite_core.external import load_config
 

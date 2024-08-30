@@ -4,10 +4,10 @@ from pkg_resources import resource_filename
 import unittest as ut
 from freezegun import freeze_time
 
-from mkite_core.models import JobInfo
+from mkite_core.models import JobInfo, Status
 from mkwind.templates import Template
 from mkwind.user import EnvSettings
-from mkite_engines import LocalConsumer, Status, EngineRoles, instantiate_from_path
+from mkite_engines import LocalConsumer, EngineRoles, instantiate_from_path
 from mkwind.builder import JobBuilder, JobSettings
 from mkite_core.tests.tempdirs import run_in_tempdir
 

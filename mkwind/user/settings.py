@@ -1,6 +1,7 @@
 import os
 from mkite_core.external import load_config
-from pydantic import BaseSettings, Field, DirectoryPath, FilePath
+from pydantic import Field, DirectoryPath, FilePath
+from pydantic_settings import BaseSettings
 
 
 class EnvSettings(BaseSettings):

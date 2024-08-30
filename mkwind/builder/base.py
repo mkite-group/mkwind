@@ -3,8 +3,8 @@ import shutil
 from typing import Union
 from tempfile import TemporaryDirectory
 
-from mkite_core.models import JobInfo
-from mkite_engines import BaseConsumer, LocalProducer, Status
+from mkite_core.models import JobInfo, Status
+from mkite_engines import BaseConsumer, LocalProducer
 from mkwind.user import EnvSettings
 from mkwind.templates import Template
 

@@ -6,9 +6,9 @@ import unittest as ut
 from unittest.mock import patch, Mock, MagicMock
 from pkg_resources import resource_filename
 
+from mkite_core.models import Status
 from mkite_core.external import load_config
 from mkite_core.tests.tempdirs import run_in_tempdir
-from mkite_engines import Status
 
 from mkwind.user import EnvSettings
 from mkwind.schedulers import SchedulerJob, SchedulerError

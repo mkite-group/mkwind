@@ -3,12 +3,9 @@ import shutil
 import subprocess
 from tempfile import TemporaryDirectory
 
-from mkite_core.models import JobInfo
-from mkite_core.models import JobResults
+from mkite_core.models import JobInfo, JobResults, Status
 from mkite_core.plugins import get_recipe
-from mkite_engines import BaseConsumer
-from mkite_engines import BaseProducer
-from mkite_engines import Status
+from mkite_engines import BaseConsumer, BaseProducer
 
 
 class PostprocessError(Exception):

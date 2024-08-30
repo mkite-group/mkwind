@@ -105,4 +105,4 @@ class JobBuilder:
     def write_template(
         self, job_folder: os.PathLike, settings: JobSettings
     ) -> os.PathLike:
-        return self.template.render_to(settings.dict(), job_folder)
+        return self.template.render_to(settings.model_dump(), job_folder)

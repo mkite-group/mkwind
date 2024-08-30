@@ -1,6 +1,6 @@
 import os
 import json
-from typing import List, Dict
+from typing import List, Dict, Optional
 from pathlib import Path
 from collections.abc import Mapping
 from mkite_core.external import load_config
@@ -23,23 +23,23 @@ def dict_update(d, u):
 
 
 class JobSettings(BaseSettings):
-    name: str = Field(
+    name: Optional[str] = Field(
         None,
         description="Name of the job to be executed",
     )
-    account: str = Field(
+    account: Optional[str] = Field(
         None,
         description="Name of the account to charge HPC resources",
     )
-    partition: str = Field(
-        "pdebug",
+    partition: Optional[str] = Field(
+        None,
         description="Name of the partition where to run calculations",
     )
     nodes: int = Field(
         1,
         description="Number of nodes to use for a given job",
     )
-    ntasks: int = Field(
+    ntasks: Optional[int] = Field(
         None,
         description="Total number of tasks",
     )
@@ -47,23 +47,23 @@ class JobSettings(BaseSettings):
         8,
         description="Total number of tasks per node",
     )
-    cpus_per_task: int = Field(
+    cpus_per_task: Optional[int] = Field(
         None,
         description="Total number of tasks",
     )
-    gpus_per_task: int = Field(
+    gpus_per_task: Optional[int] = Field(
         None,
         description="Total number of GPUs per task",
     )
-    gpus_per_node: int = Field(
+    gpus_per_node: Optional[int] = Field(
         None,
         description="Total number of GPUs per node",
     )
-    gres: str = Field(
+    gres: Optional[str] = Field(
         None,
         description="Resources to be used",
     )
-    gpus: str = Field(
+    gpus: Optional[str] = Field(
         None,
         description="Total number of GPUs/resources",
     )
@@ -71,24 +71,24 @@ class JobSettings(BaseSettings):
         "30:00",
         description="Walltime for the job",
     )
-    memory: str = Field(
+    memory: Optional[str] = Field(
         None,
         description="Total memory allocated for the job",
     )
-    memory_per_cpu: str = Field(
+    memory_per_cpu: Optional[str] = Field(
         None,
         description="Total memory per CPU allocated for the job",
     )
 
-    pre_cmd: str = Field(
+    pre_cmd: Optional[str] = Field(
         None,
         description="Commands to execute prior to running the command",
     )
-    cmd: str = Field(
+    cmd: Optional[str] = Field(
         None,
         description="Command to execute the package of interest",
     )
-    post_cmd: str = Field(
+    post_cmd: Optional[str] = Field(
         None,
         description="Commands to execute after running the command",
     )
@@ -118,7 +118,7 @@ class JobSettings(BaseSettings):
 
     def to_json(self, path: str):
         with open(path, "w") as f:
-            json.dump(self.dict(), f)
+            json.dump(self.model_dump(), f)
 
     @staticmethod
     def file_name():

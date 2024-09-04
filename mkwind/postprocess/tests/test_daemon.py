@@ -5,7 +5,7 @@ from distutils.dir_util import copy_tree
 from pkg_resources import resource_filename
 
 from mkwind.user import EnvSettings
-from mkite_engines import Status
+from mkite_core.models import Status
 from mkite_core.external import load_config
 from mkwind.postprocess.daemon import PostprocessDaemon
 from mkite_core.tests.tempdirs import run_in_tempdir

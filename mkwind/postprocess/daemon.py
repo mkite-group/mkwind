@@ -1,7 +1,8 @@
 import os
 
 from mkwind.user import EnvSettings, Logger
-from mkite_engines import Status, EngineRoles, instantiate_from_path
+from mkite_core.models import Status
+from mkite_engines import EngineRoles, instantiate_from_path
 
 from .base import JobPostprocessor
 

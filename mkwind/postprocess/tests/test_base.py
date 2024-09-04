@@ -5,14 +5,10 @@ from unittest.mock import patch
 
 from freezegun import freeze_time
 from mkite_core.external import load_config
-from mkite_core.models import JobInfo
-from mkite_core.models import JobResults
+from mkite_core.models import JobInfo, JobResults, Status
 from mkite_core.tests.tempdirs import run_in_tempdir
-from mkite_engines import EngineRoles
-from mkite_engines import instantiate_from_path
-from mkite_engines import Status
-from mkwind.postprocess.base import JobPostprocessor
-from mkwind.postprocess.base import PostprocessError
+from mkite_engines import EngineRoles, instantiate_from_path
+from mkwind.postprocess.base import JobPostprocessor, PostprocessError
 from mkwind.user import EnvSettings
 from pkg_resources import resource_filename
 

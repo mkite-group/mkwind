@@ -4,15 +4,15 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mkwind"
-version = "0.1.0"
+version = "24.09.05"
 description = "mkwind is a job building/submission automator companion to mkite"
-authors = [{name = "Daniel Schwalbe-Koda", email = "dskoda@llnl.gov"}]
+authors = [{name = "Daniel Schwalbe-Koda", email = "dskoda@ucla.edu"}]
 readme = "README.md"
 requires-python = ">=3.8"
 keywords = ["workflow", "materials-science"]
 dependencies = [
     "click",
-    "pydantic",
+    "pydantic>=2.0",
     "freezegun",
     "jinja2",
 ]

@@ -51,7 +51,7 @@ def _parse_block(block_text):
 
 
 class SGEScheduler(Scheduler):
-    TEMPLATE = Template.from_name("slurm.sh")
+    TEMPLATE = Template.from_name("sge.sh")
     SUBMIT_CMD = "qsub"
     STATUS_CMD = "qstat -xml"
     LOG_CMD = "qacct -d 1"

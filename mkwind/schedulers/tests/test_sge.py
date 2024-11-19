@@ -13,7 +13,7 @@ from mkite_core.tests.tempdirs import run_in_tempdir
 
 SETTINGS = resource_filename("mkwind.tests.files", "settings.yaml")
 QACCT_FILE = resource_filename("mkwind.schedulers.tests.files", "sge_qacct.txt")
-QSTAT_FILE = resource_filename("mkwind.schedulers.tests.files", "sge_qstat.txt")
+QSTAT_FILE = resource_filename("mkwind.schedulers.tests.files", "sge_qstat.xml")
 
 
 class MockSGEScheduler(SGEScheduler):

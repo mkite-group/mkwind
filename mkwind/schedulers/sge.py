@@ -1,6 +1,7 @@
 import os
 from enum import Enum
 from typing import List
+from xml.etree import ElementTree as ET
 
 from mkwind.jobs.dirmanager import TemporaryChdir
 from mkwind.templates import Template
@@ -113,7 +114,7 @@ class SGEScheduler(Scheduler):
         return [job for job in jobs if job["failed"] != "0"]
 
     def format_output(self, out) -> List[SchedulerJob]:
-        root = ET.fromstring(xml_string)
+        root = ET.fromstring(out)
         jobs = [
             {name: job.findtext(tag) for name, tag in self.STATUS_TAGS.items()}
             for job in root.findall(".//job_list")

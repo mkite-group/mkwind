@@ -1,5 +1,5 @@
 #!/bin/bash -l
-
+#$ -cwd
 {% if job.nodes -%}
 #$ -l nodes={{ job.nodes }}
 {% endif %}
@@ -36,7 +36,7 @@
 {%- if name -%}
 #$ -N {{ name }}
 #$ -o {{ name }}-$JOB_ID.out
-#$ -e {{ name }}-$JOB_ID.error
+#$ -e {{ name }}-$JOB_ID.err
 {% endif %}
 {%- if job.memory -%}
 #$ -l h_vmem={{ job.memory }}

@@ -13,7 +13,8 @@ from mkite_core.tests.tempdirs import run_in_tempdir
 
 SETTINGS = resource_filename("mkwind.tests.files", "settings.yaml")
 QACCT_FILE = resource_filename("mkwind.schedulers.tests.files", "sge_qacct.txt")
-QSTAT_FILE = resource_filename("mkwind.schedulers.tests.files", "sge_qstat.xml")
+QSTAT_R_FILE = resource_filename("mkwind.schedulers.tests.files", "sge_qstat_r.xml")
+QSTAT_P_FILE = resource_filename("mkwind.schedulers.tests.files", "sge_qstat_p.xml")
 
 
 class MockSGEScheduler(SGEScheduler):
@@ -21,23 +22,18 @@ class MockSGEScheduler(SGEScheduler):
 
     def _run(self, cmd):
         if "qstat" in cmd:
-            return self.qstat
+            if "-s r" in cmd:
+                return self._read_file(QSTAT_R_FILE)
+
+            if "-s p" in cmd:
+                return self._read_file(QSTAT_P_FILE)
 
         if "qacct" in cmd:
-            return self.qacct
+            return self._read_file(QACCT_FILE)
 
-    @property
-    def qacct(self):
-        with open(QACCT_FILE, "r") as f:
+    def _read_file(self, file):
+        with open(file, "r") as f:
             out = f.read()
-
-        return out
-
-    @property
-    def qstat(self):
-        with open(QSTAT_FILE, "r") as f:
-            out = f.read()
-
         return out
 
 
@@ -46,8 +42,10 @@ class TestSGEScheduler(ut.TestCase):
         settings = EnvSettings.from_file(SETTINGS)
         self.sched = MockSGEScheduler(settings=settings)
 
-    def test_gets(self):
+    def test_get_qstat(self):
         self.assertEqual(len(self.sched.get_running()), 2)
-        self.assertEqual(len(self.sched.get_pending()), 2)
+        self.assertEqual(len(self.sched.get_pending()), 3)
+
+    def test_get_qacct(self):
         self.assertEqual(len(self.sched.get_done()), 2)
-        self.assertEqual(len(self.sched.get_error()), 0)
+        self.assertEqual(len(self.sched.get_error()), 1)

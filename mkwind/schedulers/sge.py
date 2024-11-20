@@ -9,14 +9,14 @@ from mkwind.templates import Template
 from .base import Scheduler, SchedulerJob
 
 
-def parse_qacct(output):
+def parse_qacct(text):
     """
     Parses the input text and returns a list of dictionaries.
     Each block of text is separated by lines containing "=" characters.
     The last four lines of the text are ignored.
     """
     text = text.strip().split("\n")
-    text = "\n".join(lines[:-4])
+    text = "\n".join(text[:-4])
     blocks = _split_into_blocks(text)
     parsed_blocks = [_parse_block(block) for block in blocks]
     return parsed_blocks
@@ -101,7 +101,7 @@ class SGEScheduler(Scheduler):
     def get_done(self) -> List[SchedulerJob]:
         cmd = f"{self.backlog}"
         out = self._run(cmd)
-        jobs = self.format_output(out)
+        jobs = parse_qacct(out)
         return [job for job in jobs if job["failed"] == "0"]
 
     def get_error(self) -> List[SchedulerJob]:
@@ -110,7 +110,7 @@ class SGEScheduler(Scheduler):
     def get_failed(self) -> List[SchedulerJob]:
         cmd = f"{self.backlog}"
         out = self._run(cmd)
-        jobs = self.format_output(out)
+        jobs = parse_qacct(out)
         return [job for job in jobs if job["failed"] != "0"]
 
     def format_output(self, out) -> List[SchedulerJob]:

@@ -13,22 +13,22 @@
 #$ -pe smp {{ job.cpus_per_task }}
 {% endif %}
 {%- if job.gpus_per_task -%}
-#$ -l gpu={{ job.gpus_per_task }}
+#$ -l gpu,cuda={{ job.gpus_per_task }}
 {% endif %}
 {%- if job.gpus_per_node -%}
-#$ -l gpu_per_node={{ job.gpus_per_node }}
+#$ -l gpu,cuda={{ job.gpus_per_node }}
 {% endif %}
 {%- if job.gres -%}
-#$ -l gres={{ job.gres }}
+#$ -l gpu,cuda={{ job.gres }}
 {% endif %}
 {%- if job.gpus -%}
-#$ -l gpus={{ job.gpus }}
+#$ -l gpu,cuda={{ job.gpus }}
 {% endif %}
 {%- if job.walltime -%}
 #$ -l h_rt={{ job.walltime }}
 {% endif %}
 {%- if job.partition -%}
-#$ -q {{ job.partition }}
+#$ -l {{ job.partition }}
 {% endif %}
 {%- if job.account -%}
 #$ -A {{ job.account }}
@@ -39,10 +39,10 @@
 #$ -e {{ name }}-$JOB_ID.error
 {% endif %}
 {%- if job.memory -%}
-#$ -l mem={{ job.memory }}
+#$ -l h_vmem={{ job.memory }}
 {% endif %}
 {%- if job.memory_per_cpu -%}
-#$ -l mem_per_core={{ job.memory_per_cpu }}
+#$ -l h_data={{ job.memory_per_cpu }}
 {% endif %}
 
 {%- if job.pre_cmd -%}

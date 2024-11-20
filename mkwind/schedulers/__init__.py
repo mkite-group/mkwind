@@ -7,6 +7,6 @@ from .sge import SGEScheduler
 SCHEDULERS_CLS = {
     "slurm": SlurmScheduler,
     "pueue": PueueScheduler,
-    "lsf": LsfScheduler
+    "lsf": LsfScheduler,
     "sge": SGEScheduler
 }

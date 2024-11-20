@@ -1,48 +1,48 @@
 #!/bin/bash -l
 
 {% if job.nodes -%}
-#SBATCH --nodes={{ job.nodes }}
+#$ -l nodes={{ job.nodes }}
 {% endif %}
 {%- if job.ntasks -%}
-#SBATCH --ntasks={{ job.ntasks }}
+#$ -pe smp {{ job.ntasks }}
 {% endif %}
 {%- if job.tasks_per_node -%}
-#SBATCH --ntasks-per-node={{ job.tasks_per_node }}
+#$ -binding linear:{{ job.tasks_per_node }}
 {% endif %}
 {%- if job.cpus_per_task -%}
-#SBATCH --cpus-per-task={{ job.cpus_per_task }}
+#$ -pe smp {{ job.cpus_per_task }}
 {% endif %}
 {%- if job.gpus_per_task -%}
-#SBATCH --gpus-per-task={{ job.gpus_per_task }}
+#$ -l gpu={{ job.gpus_per_task }}
 {% endif %}
 {%- if job.gpus_per_node -%}
-#SBATCH --gpus-per-node={{ job.gpus_per_node }}
+#$ -l gpu_per_node={{ job.gpus_per_node }}
 {% endif %}
 {%- if job.gres -%}
-#SBATCH --gres={{ job.gres }}
+#$ -l gres={{ job.gres }}
 {% endif %}
 {%- if job.gpus -%}
-#SBATCH --gpus={{ job.gpus }}
+#$ -l gpus={{ job.gpus }}
 {% endif %}
 {%- if job.walltime -%}
-#SBATCH --time={{ job.walltime }}
+#$ -l h_rt={{ job.walltime }}
 {% endif %}
 {%- if job.partition -%}
-#SBATCH --partition={{ job.partition }}
+#$ -q {{ job.partition }}
 {% endif %}
 {%- if job.account -%}
-#SBATCH --account={{ job.account }}
+#$ -A {{ job.account }}
 {% endif %}
 {%- if name -%}
-#SBATCH --job-name={{ name }}
-#SBATCH --output={{ name }}-%j.out
-#SBATCH --error={{ name }}-%j.error
+#$ -N {{ name }}
+#$ -o {{ name }}-$JOB_ID.out
+#$ -e {{ name }}-$JOB_ID.error
 {% endif %}
 {%- if job.memory -%}
-#SBATCH --mem={{ job.memory }}
+#$ -l mem={{ job.memory }}
 {% endif %}
 {%- if job.memory_per_cpu -%}
-#SBATCH --mem-per-cpu={{ job.memory_per_cpu }}
+#$ -l mem_per_core={{ job.memory_per_cpu }}
 {% endif %}
 
 {%- if job.pre_cmd -%}

@@ -23,28 +23,6 @@
       <jclass_name></jclass_name>
       <slots>256</slots>
     </job_list>
-    <job_list state="pending">
-      <JB_job_number>3</JB_job_number>
-      <JAT_prio>0.59834</JAT_prio>
-      <JB_name>job3.sh</JB_name>
-      <JB_owner>user1</JB_owner>
-      <state>r</state>
-      <JAT_start_time>2024-11-19T00:01:48.124</JAT_start_time>
-      <queue_name>queue@node</queue_name>
-      <jclass_name></jclass_name>
-      <slots>256</slots>
-    </job_list>
-    <job_list state="pending">
-      <JB_job_number>4</JB_job_number>
-      <JAT_prio>0.54180</JAT_prio>
-      <JB_name>job4.sh</JB_name>
-      <JB_owner>user2</JB_owner>
-      <state>r</state>
-      <JAT_start_time>2024-07-15T09:59:52.118</JAT_start_time>
-      <queue_name>queue2@node</queue_name>
-      <jclass_name></jclass_name>
-      <slots>2</slots>
-    </job_list>
   </queue_info>
   <job_info>
   </job_info>

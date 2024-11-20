@@ -106,6 +106,60 @@ maxpss       0.000
 arid         undefined
 jc_name      NONE
 bound_cores  NONE
+==============================================================
+qname        render_queue.q
+hostname     render_node2023
+group        graphics_team
+owner        user_gamma
+project      3d_rendering_project
+department   design_dept
+jobname      render_scene05
+jobnumber    9876543
+taskid       307
+pe_taskid    NONE
+account      compute_account3
+priority     0
+cwd          /projects/graphics_team/user_gamma/3d_rendering/scenes/render_scene05
+submit_host  host9012
+submit_cmd   render_task -t 1-64 Scripts/render_scene05.job
+qsub_time    11/18/2024 14:22:15.987
+start_time   11/18/2024 16:02:10.123
+end_time     11/18/2024 16:03:05.456
+granted_pe   NONE
+slots        1
+failed       1
+deleted_by   NONE
+exit_status  1
+ru_wallclock 0.932
+ru_utime     0.562
+ru_stime     0.331
+ru_maxrss    12456
+ru_ixrss     0
+ru_ismrss    0
+ru_idrss     0
+ru_isrss     0
+ru_minflt    86432
+ru_majflt    12
+ru_nswap     0
+ru_inblock   2100
+ru_oublock   5120
+ru_msgsnd    0
+ru_msgrcv    0
+ru_nsignals  0
+ru_nvcsw     1502
+ru_nivcsw    170
+wallclock    1.123
+cpu          0.893
+mem          0.005
+io           0.089
+iow          0.015
+ioops        8320
+maxvmem      12.004M
+maxrss       0.000
+maxpss       0.000
+arid         undefined
+jc_name      NONE
+bound_cores  NONE
 Total System Usage
     WALLCLOCK         UTIME         STIME           CPU             MEMORY                 IO                IOW
 ================================================================================================================

@@ -1,0 +1,40 @@
+<?xml version='1.0'?>
+<job_info  xmlns:xsd="http://www.univa.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <queue_info>
+    <job_list state="pending">
+      <JB_job_number>3</JB_job_number>
+      <JAT_prio>0.59834</JAT_prio>
+      <JB_name>job3.sh</JB_name>
+      <JB_owner>user1</JB_owner>
+      <state>p</state>
+      <JAT_start_time>2024-11-19T00:01:48.124</JAT_start_time>
+      <queue_name>queue@node</queue_name>
+      <jclass_name></jclass_name>
+      <slots>256</slots>
+    </job_list>
+    <job_list state="pending">
+      <JB_job_number>4</JB_job_number>
+      <JAT_prio>0.54180</JAT_prio>
+      <JB_name>job4.sh</JB_name>
+      <JB_owner>user2</JB_owner>
+      <state>p</state>
+      <JAT_start_time>2024-07-15T09:59:52.118</JAT_start_time>
+      <queue_name>queue2@node</queue_name>
+      <jclass_name></jclass_name>
+      <slots>2</slots>
+    </job_list>
+    <job_list state="pending">
+      <JB_job_number>5</JB_job_number>
+      <JAT_prio>0.6841</JAT_prio>
+      <JB_name>job5.sh</JB_name>
+      <JB_owner>user4</JB_owner>
+      <state>p</state>
+      <JAT_start_time>2024-07-15T11:20:17.318</JAT_start_time>
+      <queue_name>queue5@node1232</queue_name>
+      <jclass_name></jclass_name>
+      <slots>8</slots>
+    </job_list>
+  </queue_info>
+  <job_info>
+  </job_info>
+</job_info>

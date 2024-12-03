@@ -19,7 +19,7 @@ def parse_qacct(text):
     text = "\n".join(text[:-4])
     blocks = _split_into_blocks(text)
     parsed_blocks = [_parse_block(block) for block in blocks]
-    return parsed_blocks
+    return [blk for blk in parsed_blocks if blk]
 
 
 def _split_into_blocks(text):
@@ -67,7 +67,7 @@ class SGEScheduler(Scheduler):
     def submit_job(self, job_folder: os.PathLike):
         name = os.path.basename(job_folder)
         with TemporaryChdir(to=job_folder):
-            cmd = f"{self.SUBMIT_CMD} --job-name={name} {self.TEMPLATE.FILENAME}"
+            cmd = f"{self.SUBMIT_CMD} -N {name} {self.TEMPLATE.FILENAME}"
             out = self._run(cmd)
 
         return out

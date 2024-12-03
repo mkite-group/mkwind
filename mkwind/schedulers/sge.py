@@ -55,13 +55,21 @@ class SGEScheduler(Scheduler):
     TEMPLATE = Template.from_name("sge.sh")
     SUBMIT_CMD = "qsub"
     STATUS_CMD = "qstat -xml"
-    LOG_CMD = "qacct -d 1"
+    LOG_CMD = "qacct -d 1 -j"
     STATUS_TAGS = {
         "id": "JB_job_number",
         "name": "JB_name",
         "start_time": "JAT_start_time",
         "group": "queue_name",
         "status": "state",
+    }
+    QACCT_TAGS = {
+        "id": "jobnumber",
+        "name": "jobname",
+        "start_time": "start_time",
+        "group": "group",
+        "status": "failed",
+        "partition": "qname",
     }
 
     def submit_job(self, job_folder: os.PathLike):
@@ -102,7 +110,8 @@ class SGEScheduler(Scheduler):
         cmd = f"{self.backlog}"
         out = self._run(cmd)
         jobs = parse_qacct(out)
-        return [job for job in jobs if job["failed"] == "0"]
+        jobs = [job for job in jobs if job["failed"] == "0"]
+        return self.format_qacct(jobs)
 
     def get_error(self) -> List[SchedulerJob]:
         return self.get_failed()
@@ -111,12 +120,20 @@ class SGEScheduler(Scheduler):
         cmd = f"{self.backlog}"
         out = self._run(cmd)
         jobs = parse_qacct(out)
-        return [job for job in jobs if job["failed"] != "0"]
+        jobs = [job for job in jobs if job["failed"] != "0"]
+        return self.format_qacct(jobs)
 
     def format_output(self, out) -> List[SchedulerJob]:
         root = ET.fromstring(out)
         jobs = [
             {name: job.findtext(tag) for name, tag in self.STATUS_TAGS.items()}
             for job in root.findall(".//job_list")
+        ]
+        return [SchedulerJob(**jdict) for jdict in jobs]
+
+    def format_qacct(self, jobs: List[dict]) -> List[SchedulerJob]:
+        jobs = [
+            {name: job[val] for name, val in self.QACCT_TAGS.items()}
+            for job in jobs
         ]
         return [SchedulerJob(**jdict) for jdict in jobs]

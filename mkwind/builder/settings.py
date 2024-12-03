@@ -79,6 +79,10 @@ class JobSettings(BaseSettings):
         None,
         description="Total memory per CPU allocated for the job",
     )
+    extra_args: Optional[str] = Field(
+        None,
+        description="Extra arguments to pass to the script",
+    )
 
     pre_cmd: Optional[str] = Field(
         None,

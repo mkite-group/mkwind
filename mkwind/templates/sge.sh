@@ -8,6 +8,7 @@
 {% endif %}
 {%- if job.tasks_per_node -%}
 #$ -binding linear:{{ job.tasks_per_node }}
+#$ -pe shared
 {% endif %}
 {%- if job.cpus_per_task -%}
 #$ -pe smp {{ job.cpus_per_task }}
@@ -43,6 +44,9 @@
 {% endif %}
 {%- if job.memory_per_cpu -%}
 #$ -l h_data={{ job.memory_per_cpu }}
+{% endif %}
+{%- if job.extra_args -%}
+#$ {{ job.extra_args }}
 {% endif %}
 
 {%- if job.pre_cmd -%}

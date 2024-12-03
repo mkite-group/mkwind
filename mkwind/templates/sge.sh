@@ -7,8 +7,7 @@
 #$ -pe smp {{ job.ntasks }}
 {% endif %}
 {%- if job.tasks_per_node -%}
-#$ -binding linear:{{ job.tasks_per_node }}
-#$ -pe shared
+#$ -pe shared {{ job.tasks_per_node }}
 {% endif %}
 {%- if job.cpus_per_task -%}
 #$ -pe smp {{ job.cpus_per_task }}

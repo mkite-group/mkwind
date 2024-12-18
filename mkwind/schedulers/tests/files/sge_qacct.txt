@@ -1,0 +1,166 @@
+==============================================================
+qname        compute_pool.q
+hostname     node5678
+group        bioinformatics_team
+owner        user_alpha
+project      genome_analysis_project
+department   bio_dept
+jobname      task01_genome_stats
+jobnumber    7890123
+taskid       101
+pe_taskid    NONE
+account      compute_account1
+priority     0
+cwd          /data/users/user_alpha/projects/genome_analysis/workdir
+submit_host  host1234
+submit_cmd   run_job -t 1-256 Scripts/task01_genome_stats.job
+qsub_time    11/18/2024 11:11:55.829
+start_time   11/18/2024 13:51:22.711
+end_time     11/18/2024 13:51:25.563
+granted_pe   NONE
+slots        1
+failed       0
+deleted_by   NONE
+exit_status  0
+ru_wallclock 2.852
+ru_utime     1.402
+ru_stime     0.955
+ru_maxrss    8372
+ru_ixrss     0
+ru_ismrss    0
+ru_idrss     0
+ru_isrss     0
+ru_minflt    186306
+ru_majflt    0
+ru_nswap     0
+ru_inblock   6512
+ru_oublock   9200
+ru_msgsnd    0
+ru_msgrcv    0
+ru_nsignals  0
+ru_nvcsw     3830
+ru_nivcsw    396
+wallclock    3.163
+cpu          2.357
+mem          0.003
+io           0.255
+iow          0.020
+ioops        28777
+maxvmem      16.051M
+maxrss       0.000
+maxpss       0.000
+arid         undefined
+jc_name      NONE
+bound_cores  NONE
+==============================================================
+qname        analysis_queue.q
+hostname     node9876
+group        data_science_team
+owner        user_beta
+project      climate_modeling_project
+department   analytics_dept
+jobname      simulation_run02
+jobnumber    3456789
+taskid       205
+pe_taskid    NONE
+account      compute_account2
+priority     0
+cwd          /workdir/data_science_team/user_beta/climate_modeling/simulation_run02
+submit_host  host5678
+submit_cmd   execute_job -t 1-512 Scripts/simulation_run02.job
+qsub_time    11/18/2024 12:34:45.123
+start_time   11/18/2024 14:15:22.711
+end_time     11/18/2024 14:16:25.563
+granted_pe   NONE
+slots        1
+failed       0
+deleted_by   NONE
+exit_status  0
+ru_wallclock 3.125
+ru_utime     1.512
+ru_stime     1.007
+ru_maxrss    9210
+ru_ixrss     0
+ru_ismrss    0
+ru_idrss     0
+ru_isrss     0
+ru_minflt    195306
+ru_majflt    0
+ru_nswap     0
+ru_inblock   7200
+ru_oublock   11000
+ru_msgsnd    0
+ru_msgrcv    0
+ru_nsignals  0
+ru_nvcsw     3900
+ru_nivcsw    402
+wallclock    4.013
+cpu          2.873
+mem          0.004
+io           0.290
+iow          0.025
+ioops        29800
+maxvmem      18.512M
+maxrss       0.000
+maxpss       0.000
+arid         undefined
+jc_name      NONE
+bound_cores  NONE
+==============================================================
+qname        render_queue.q
+hostname     render_node2023
+group        graphics_team
+owner        user_gamma
+project      3d_rendering_project
+department   design_dept
+jobname      render_scene05
+jobnumber    9876543
+taskid       307
+pe_taskid    NONE
+account      compute_account3
+priority     0
+cwd          /projects/graphics_team/user_gamma/3d_rendering/scenes/render_scene05
+submit_host  host9012
+submit_cmd   render_task -t 1-64 Scripts/render_scene05.job
+qsub_time    11/18/2024 14:22:15.987
+start_time   11/18/2024 16:02:10.123
+end_time     11/18/2024 16:03:05.456
+granted_pe   NONE
+slots        1
+failed       1
+deleted_by   NONE
+exit_status  1
+ru_wallclock 0.932
+ru_utime     0.562
+ru_stime     0.331
+ru_maxrss    12456
+ru_ixrss     0
+ru_ismrss    0
+ru_idrss     0
+ru_isrss     0
+ru_minflt    86432
+ru_majflt    12
+ru_nswap     0
+ru_inblock   2100
+ru_oublock   5120
+ru_msgsnd    0
+ru_msgrcv    0
+ru_nsignals  0
+ru_nvcsw     1502
+ru_nivcsw    170
+wallclock    1.123
+cpu          0.893
+mem          0.005
+io           0.089
+iow          0.015
+ioops        8320
+maxvmem      12.004M
+maxrss       0.000
+maxpss       0.000
+arid         undefined
+jc_name      NONE
+bound_cores  NONE
+Total System Usage
+    WALLCLOCK         UTIME         STIME           CPU             MEMORY                 IO                IOW
+================================================================================================================
+    126280387 179584914.604  22937278.963 220362353.074     3418617641.413        2478173.064         888216.290

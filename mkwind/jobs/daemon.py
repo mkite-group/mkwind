@@ -123,9 +123,15 @@ class JobDaemon:
         return failed
 
     def run(self):
-        self.logger.hbar()
-        self.logger.log("entering management loop")
-        self.process_done()
-        self.submit()
-        self.process_error()
-        self.process_failed()
+        try:
+            self.logger.hbar()
+            self.logger.log("entering management loop")
+            self.process_done()
+            self.submit()
+            self.process_error()
+            self.process_failed()
+
+        except SchedulerError as e:
+                self.logger.log(f"scheduler error: {e}")
+                self.logger.log(f"sleeping for {self.error_sleep}")
+                time.sleep(self.error_sleep)

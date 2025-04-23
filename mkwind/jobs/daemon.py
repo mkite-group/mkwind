@@ -2,7 +2,7 @@ import os
 import time
 from typing import List
 
-from mkwind.user import EnvSettings, Logger
+from mkwind.user import EnvSettings, Logger, LoggerLevel
 from mkwind.schedulers import Scheduler, SchedulerJob, SchedulerError, SCHEDULERS_CLS
 from mkite_core.models import Status
 from mkite_engines import EngineRoles, instantiate_from_path
@@ -81,8 +81,8 @@ class JobDaemon:
             # if there is an error, revert the move operation
             except SchedulerError as e:
                 self.change_status(dst, Status.DOING.value, Status.READY.value)
-                self.logger.log(f"error submitting {job_folder}: {e}")
-                self.logger.log(f"sleeping for {self.error_sleep}")
+                self.logger.log(f"error submitting {job_folder}: {e}", level=LoggerLevel.ERROR)
+                self.logger.log(f"sleeping for {self.error_sleep}", level=LoggerLevel.ERROR)
                 time.sleep(self.error_sleep)
 
         return submitted
@@ -132,6 +132,6 @@ class JobDaemon:
             self.process_failed()
 
         except SchedulerError as e:
-                self.logger.log(f"scheduler error: {e}")
-                self.logger.log(f"sleeping for {self.error_sleep}")
+                self.logger.log(f"scheduler error: {e}", level=LoggerLevel.ERROR)
+                self.logger.log(f"sleeping for {self.error_sleep}", level=LoggerLevel.ERROR)
                 time.sleep(self.error_sleep)

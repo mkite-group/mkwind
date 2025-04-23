@@ -30,9 +30,9 @@ class LoggerHook(ABC):
 
 
 class PrintHook(LoggerHook):
-    def log(self, msg: str, format: bool = True):
+    def log(self, msg: str, format: bool = True, level: LoggerLevel = LoggerLevel.INFO):
         if format:
-            msg = self.format(msg)
+            msg = self.format(msg, level=level)
 
         print(msg)
 
@@ -46,12 +46,12 @@ class FileHook(LoggerHook):
         if clean and os.path.exists(filepath):
             os.remove(filepath)
 
-    def log(self, msg: str, format: bool = True):
+    def log(self, msg: str, format: bool = True, level: LoggerLevel = LoggerLevel.INFO):
         if not msg.endswith("\n"):
             msg += "\n"
 
         if format:
-            msg = self.format(msg)
+            msg = self.format(msg, level=level)
 
         with open(self.filepath, "a+") as f:
             f.write(msg)

@@ -16,7 +16,7 @@ class LoggerLevel(IntEnum):
 
 class LoggerHook(ABC):
     @abstractmethod
-    def log(self, msg: str, format: bool = True):
+    def log(self, msg: str, format: bool = True, level: LoggerLevel = LoggerLevel.INFO):
         pass
 
     def format(self, msg: str, level: LoggerLevel = LoggerLevel.INFO):
@@ -61,9 +61,9 @@ class Logger:
     def __init__(self, hooks: List[LoggerHook]):
         self.hooks = hooks
 
-    def log(self, msg: str, format: bool = True):
+    def log(self, msg: str, format: bool = True, level: LoggerLevel = LoggerLevel.INFO):
         for h in self.hooks:
-            h.log(msg, format=format)
+            h.log(msg, format=format, level=level)
 
     def newline(self):
         for h in self.hooks:

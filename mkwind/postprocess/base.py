@@ -44,6 +44,16 @@ class JobPostprocessor:
 
         return done, errors
 
+    def postprocess_one(self, folder: str):
+        try:
+            self.postprocess_job(folder)
+            return True
+
+        except (PostprocessError, FileNotFoundError) as e:
+            self.on_error(folder)
+
+        return False
+
     def get_jobinfo(self, folder: os.PathLike):
         info_file = os.path.join(folder, JobInfo.file_name())
 

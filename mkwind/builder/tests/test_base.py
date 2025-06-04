@@ -165,3 +165,101 @@ class TestBuilder(ut.TestCase):
 
         built = builder.build_all()
         self.assertEqual(len(built), 0)
+
+    @run_in_tempdir
+    def test_build_all_max_build(self):
+        builder = self.get_builder(explicit_config=True)
+        recipe = self.info.recipe["name"]
+        builder.src.add_queue(recipe)
+
+        recipe_queue = builder.src.format_queue_name(recipe)
+        
+        # Add multiple jobs to the queue
+        for i in range(3):
+            info_copy = JobInfo.from_json(INFO_PATH)
+            info_copy.recipe["package"] = "vasp"
+            info_copy.recipe["name"] = "vasp.pbe.relax"
+            info_copy.job["uuid"] = f"test-uuid-{i}"
+            info_copy.to_json(f"building/{recipe_queue}/jobinfo_{i}.json")
+
+        to_build = os.listdir(f"building/{recipe_queue}")
+        self.assertEqual(len(to_build), 3)
+
+        # Test max_build limit
+        built = builder.build_all(max_build=2)
+        self.assertEqual(len(built), 2)
+
+        # Check that one job remains in the queue
+        remaining = os.listdir(f"building/{recipe_queue}")
+        self.assertEqual(len(remaining), 1)
+
+    @run_in_tempdir
+    def test_build_one_with_recipe(self):
+        builder = self.get_builder(explicit_config=True)
+        recipe = self.info.recipe["name"]
+        builder.src.add_queue(recipe)
+
+        recipe_queue = builder.src.format_queue_name(recipe)
+        self.info.to_json(f"building/{recipe_queue}/jobinfo.json")
+
+        key, info, job_folder = builder.build_one(recipe=recipe)
+        
+        self.assertIsNotNone(key)
+        self.assertIsNotNone(info)
+        self.assertIsNotNone(job_folder)
+        self.assertEqual(info.recipe["name"], recipe)
+
+        # Check that job folder was created with expected files
+        files = set(os.listdir(job_folder))
+        expected_files = {
+            Template.FILENAME,
+            JobInfo.file_name(),
+            JobSettings.file_name(),
+        }
+        self.assertEqual(files, expected_files)
+
+    @run_in_tempdir
+    def test_build_one_without_recipe(self):
+        builder = self.get_builder(explicit_config=True)
+        recipe = self.info.recipe["name"]
+        builder.src.add_queue(recipe)
+
+        recipe_queue = builder.src.format_queue_name(recipe)
+        self.info.to_json(f"building/{recipe_queue}/jobinfo.json")
+
+        key, info, job_folder = builder.build_one()
+        
+        self.assertIsNotNone(key)
+        self.assertIsNotNone(info)
+        self.assertIsNotNone(job_folder)
+
+    @run_in_tempdir
+    def test_build_one_empty_queue(self):
+        builder = self.get_builder(explicit_config=True)
+        recipe = self.info.recipe["name"]
+        builder.src.add_queue(recipe)
+
+        # Don't add any jobs to the queue
+        key, info, job_folder = builder.build_one(recipe=recipe)
+        
+        self.assertIsNone(key)
+        self.assertIsNone(info)
+        self.assertIsNone(job_folder)
+
+    @run_in_tempdir
+    def test_build_one_delete_on_build(self):
+        builder = self.get_builder(explicit_config=True, delete_on_build=True)
+        recipe = self.info.recipe["name"]
+        builder.src.add_queue(recipe)
+
+        recipe_queue = builder.src.format_queue_name(recipe)
+        self.info.to_json(f"building/{recipe_queue}/jobinfo.json")
+
+        to_build_before = os.listdir(f"building/{recipe_queue}")
+        self.assertEqual(len(to_build_before), 1)
+
+        key, info, job_folder = builder.build_one(recipe=recipe)
+        
+        # Check that job was deleted from source queue
+        to_build_after = os.listdir(f"building/{recipe_queue}")
+        self.assertEqual(len(to_build_after), 0)

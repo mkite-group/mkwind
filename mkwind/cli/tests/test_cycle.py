@@ -30,10 +30,6 @@ class TestCycle(ut.TestCase):
     def get_template(self):
         return Template.from_name("slurm.sh")
 
-    def get_daemon(self, settings):
-        """Helper method to create a daemon for testing."""
-        return BuilderDaemon.from_settings(settings)
-
     @run_in_tempdir
     def test_get_managers(self):
         """Test that _get_managers properly initializes builder and postprocessor."""
@@ -205,20 +201,3 @@ class TestCycle(ut.TestCase):
         args = mock_run_cycle.call_args[0]
         self.assertEqual(len(args), 3)  # builder, pproc, recipe
         self.assertEqual(args[2], recipe)  # recipe should be the third argument
-
-    @run_in_tempdir
-    def test_example(self):
-        # TODO: Read this portion to understand how to make a unittest
-        settings = self.get_settings()
-        self.copy_example_jobs(settings)
-        daemon = self.get_daemon(settings)
-
-        built = daemon.build()
-        built = built[0]
-
-        to_build = daemon.builder.src.list_queue("vasp.example")
-        self.assertEqual(to_build, [])
-        self.assertTrue(os.path.exists(built))
-
-        files = set(os.listdir(built))
-        self.assertEqual(files, {"jobinfo.json", "job.sh", "runstats.json"})

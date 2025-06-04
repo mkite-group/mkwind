@@ -46,13 +46,15 @@ def _get_managers(settings, dst):
     dst_engine = LocalProducer(root_path=dst)
     dst_engine.add_queue(Status.READY)
 
+    template = Template.from_name(settings.SCHEDULER)
+
     builder = JobBuilder(
         src_engine=src_engine,
         dst_engine=dst_engine,
         settings=settings,
-        template=settings.SCHEDULER,
+        template=template,
         explicit_config=True,
-        delete_on_build=False,
+        delete_on_build=True,
     )
 
     # Prep: initiate the postprocessor

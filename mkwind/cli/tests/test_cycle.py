@@ -1,6 +1,6 @@
 import os
 import unittest as ut
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 from distutils.dir_util import copy_tree
 from pkg_resources import resource_filename
 
@@ -30,15 +30,198 @@ class TestCycle(ut.TestCase):
     def get_template(self):
         return Template.from_name("slurm.sh")
 
-    @run_in_tempdir
-    def test_get_managers(self):
-        # TODO: fill out here
-        pass
+    def get_daemon(self, settings):
+        """Helper method to create a daemon for testing."""
+        return BuilderDaemon.from_settings(settings)
 
     @run_in_tempdir
-    def test_run_cycle(self):
-        # TODO: fill out here
-        pass
+    def test_get_managers(self):
+        """Test that _get_managers properly initializes builder and postprocessor."""
+        settings = self.get_settings()
+        dst = "test_dst"
+        os.makedirs(dst, exist_ok=True)
+        
+        settings_obj, builder, pproc = _get_managers(settings, dst)
+        
+        # Verify settings object
+        self.assertIsInstance(settings_obj, EnvSettings)
+        
+        # Verify builder is properly configured
+        self.assertIsNotNone(builder)
+        self.assertEqual(builder.explicit_config, True)
+        self.assertEqual(builder.delete_on_build, False)
+        
+        # Verify postprocessor is properly configured
+        self.assertIsNotNone(pproc)
+        self.assertEqual(pproc.compress, True)
+        self.assertEqual(pproc.allow_restart, False)
+
+    @run_in_tempdir
+    @patch('mkite_core.plugins.get_recipe')
+    def test_run_cycle(self, mock_get_recipe):
+        """Test that _run_cycle properly builds, runs, and postprocesses a job."""
+        from mkwind.cli.tests.dummy_job import DummyRecipe
+        
+        # Mock the recipe loading
+        mock_recipe_plugin = patch.object(mock_get_recipe.return_value, 'load', return_value=DummyRecipe)
+        
+        with mock_recipe_plugin:
+            settings = self.get_settings()
+            self.copy_example_jobs(settings)
+            
+            dst = "test_dst"
+            os.makedirs(dst, exist_ok=True)
+            
+            settings_obj, builder, pproc = _get_managers(settings, dst)
+            
+            # Mock builder.build_one to return test data
+            test_folder = os.path.join(dst, "test_job_folder")
+            os.makedirs(test_folder, exist_ok=True)
+            
+            # Create a mock JobInfo
+            from mkite_core.models import JobInfo
+            mock_info = JobInfo(
+                job="test_job_123",
+                recipe={"name": "dummy_recipe", "package": "test"},
+                inputs=[],
+                options={}
+            )
+            
+            with patch.object(builder, 'build_one', return_value=("test_key", mock_info, test_folder)):
+                with patch.object(pproc, 'postprocess_one') as mock_postprocess:
+                    # Run the cycle
+                    _run_cycle(builder, pproc, "dummy_recipe")
+                    
+                    # Verify that build_one was called
+                    builder.build_one.assert_called_once_with("dummy_recipe")
+                    
+                    # Verify that postprocess_one was called with the correct folder
+                    mock_postprocess.assert_called_once_with(test_folder)
+                    
+                    # Verify that the dummy job created its output files
+                    self.assertTrue(os.path.exists(os.path.join(test_folder, "dummy_output.json")))
+                    self.assertTrue(os.path.exists(os.path.join(test_folder, "job_complete.txt")))
+
+    @run_in_tempdir
+    @patch('mkite_core.plugins.get_recipe')
+    def test_run_cycle_with_job_failure(self, mock_get_recipe):
+        """Test that _run_cycle handles job execution failures gracefully."""
+        # Create a failing recipe
+        class FailingRecipe:
+            def __init__(self, job_info):
+                self.job_info = job_info
+            
+            def run(self):
+                raise RuntimeError("Simulated job failure")
+        
+        mock_recipe_plugin = patch.object(mock_get_recipe.return_value, 'load', return_value=FailingRecipe)
+        
+        with mock_recipe_plugin:
+            settings = self.get_settings()
+            self.copy_example_jobs(settings)
+            
+            dst = "test_dst"
+            os.makedirs(dst, exist_ok=True)
+            
+            settings_obj, builder, pproc = _get_managers(settings, dst)
+            
+            test_folder = os.path.join(dst, "test_job_folder")
+            os.makedirs(test_folder, exist_ok=True)
+            
+            from mkite_core.models import JobInfo
+            mock_info = JobInfo(
+                job="test_job_123",
+                recipe={"name": "failing_recipe", "package": "test"},
+                inputs=[],
+                options={}
+            )
+            
+            with patch.object(builder, 'build_one', return_value=("test_key", mock_info, test_folder)):
+                with patch.object(pproc, 'postprocess_one') as mock_postprocess:
+                    with patch('builtins.print') as mock_print:
+                        # Run the cycle - should handle the exception gracefully
+                        _run_cycle(builder, pproc, "failing_recipe")
+                        
+                        # Verify error message was printed
+                        mock_print.assert_any_call(f"ERROR: Failed to run the job {mock_info.job}")
+                        
+                        # Postprocess should still be called
+                        mock_postprocess.assert_called_once_with(test_folder)
+
+    @run_in_tempdir
+    @patch('mkite_core.plugins.get_recipe')
+    def test_run_cycle_with_postprocess_failure(self, mock_get_recipe):
+        """Test that _run_cycle handles postprocessing failures gracefully."""
+        from mkwind.cli.tests.dummy_job import DummyRecipe
+        
+        mock_recipe_plugin = patch.object(mock_get_recipe.return_value, 'load', return_value=DummyRecipe)
+        
+        with mock_recipe_plugin:
+            settings = self.get_settings()
+            self.copy_example_jobs(settings)
+            
+            dst = "test_dst"
+            os.makedirs(dst, exist_ok=True)
+            
+            settings_obj, builder, pproc = _get_managers(settings, dst)
+            
+            test_folder = os.path.join(dst, "test_job_folder")
+            os.makedirs(test_folder, exist_ok=True)
+            
+            from mkite_core.models import JobInfo
+            mock_info = JobInfo(
+                job="test_job_123",
+                recipe={"name": "dummy_recipe", "package": "test"},
+                inputs=[],
+                options={}
+            )
+            
+            with patch.object(builder, 'build_one', return_value=("test_key", mock_info, test_folder)):
+                with patch.object(pproc, 'postprocess_one', side_effect=RuntimeError("Postprocess failed")):
+                    with patch('builtins.print') as mock_print:
+                        # Run the cycle - should handle the postprocess exception gracefully
+                        _run_cycle(builder, pproc, "dummy_recipe")
+                        
+                        # Verify error message was printed
+                        mock_print.assert_any_call(f"ERROR: Failed to postprocess the job {mock_info.job}")
+
+    @run_in_tempdir
+    def test_run_cycle_no_job_available(self):
+        """Test that _run_cycle handles the case when no job is available to build."""
+        settings = self.get_settings()
+        dst = "test_dst"
+        os.makedirs(dst, exist_ok=True)
+        
+        settings_obj, builder, pproc = _get_managers(settings, dst)
+        
+        # Mock builder.build_one to return None (no job available)
+        with patch.object(builder, 'build_one', return_value=(None, None, None)):
+            with patch.object(pproc, 'postprocess_one') as mock_postprocess:
+                # Run the cycle
+                result = _run_cycle(builder, pproc, "nonexistent_recipe")
+                
+                # Verify that postprocess_one was not called
+                mock_postprocess.assert_not_called()
+                
+                # Function should return None
+                self.assertIsNone(result)
+
+    @run_in_tempdir
+    @patch('mkwind.cli.cycle._run_cycle')
+    def test_cycle_integration(self, mock_run_cycle):
+        """Test the main _cycle function integration."""
+        settings = self.get_settings()
+        dst = "test_dst"
+        recipe = "test_recipe"
+        
+        # Run the cycle function
+        _cycle(recipe, settings, dst)
+        
+        # Verify that _run_cycle was called with the correct arguments
+        mock_run_cycle.assert_called_once()
+        args = mock_run_cycle.call_args[0]
+        self.assertEqual(len(args), 3)  # builder, pproc, recipe
+        self.assertEqual(args[2], recipe)  # recipe should be the third argument
 
     @run_in_tempdir
     def test_example(self):

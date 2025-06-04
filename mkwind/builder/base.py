@@ -70,6 +70,24 @@ class JobBuilder:
 
         return built
 
+    def build_one(self, recipe: str = None):
+        if recipe is None:
+            queue = self.get_src_queues()[0]
+        else:
+            queue = self.src.format_queue_name(recipe)
+
+        key, info = self.src.get_info(queue)
+
+        if info is None:
+            return key, info, None
+
+        job_folder = self.build_job(info)
+
+        if self.delete_on_build:
+            self.src.delete(key)
+
+        return key, info, job_folder
+
     def build_job(self, info: JobInfo) -> os.PathLike:
         job_settings = self.get_settings(info)
 

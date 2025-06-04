@@ -28,6 +28,15 @@ from mkwind.templates import Template
     help="path to the destination folder where the job will be built",
 )
 def cycle(recipe, settings, dst):
+    return _cycle(recipe, settings, dst)
+
+
+def _cycle(recipe, settings, dst):
+    settings, builder, pproc = _get_managers(settings, dst)
+    _run_cycle(builder, pproc, recipe)
+
+
+def _get_managers(settings, dst):
     settings = get_settings(settings)
 
     # Prep: initiate the builder
@@ -67,6 +76,10 @@ def cycle(recipe, settings, dst):
         allow_restart=False,
     )
 
+    return settings, builder, pproc
+
+
+def _run_cycle(builder, pproc, recipe):
     # 1. Builds the job onto a new folder
     key, info, folder = builder.build_one(recipe)
 

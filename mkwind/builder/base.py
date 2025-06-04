@@ -72,11 +72,9 @@ class JobBuilder:
 
     def build_one(self, recipe: str = None):
         if recipe is None:
-            queue = self.get_src_queues()[0]
-        else:
-            queue = self.src.format_queue_name(recipe)
+            recipe = self.get_src_queues()[0]
 
-        key, info = self.src.get_info(queue)
+        key, info = self.src.get_info(recipe)
 
         if info is None:
             return key, info, None

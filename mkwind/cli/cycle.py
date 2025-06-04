@@ -1,14 +1,14 @@
 import os
-import click
 
+import click
 from mkite_core.models import JobInfo, Status
 from mkite_core.plugins import get_recipe
-from mkite_engines.local import LocalProducer, LocalConsumer
 from mkite_engines import EngineRoles, instantiate_from_path
-from mkwind.user.settings import get_settings
+from mkite_engines.local import LocalConsumer, LocalProducer
 from mkwind.builder import JobBuilder
 from mkwind.postprocess import JobPostprocessor
 from mkwind.templates import Template
+from mkwind.user.settings import get_settings
 
 
 @click.command("cycle")

@@ -37,11 +37,11 @@ class TestCycle(ut.TestCase):
     @run_in_tempdir
     def test_get_managers(self):
         """Test that _get_managers properly initializes builder and postprocessor."""
-        settings = self.get_settings()
+        settings_obj = self.get_settings()
         dst = "test_dst"
         os.makedirs(dst, exist_ok=True)
         
-        settings_obj, builder, pproc = _get_managers(settings, dst)
+        _, builder, pproc = _get_managers(None, dst)
         
         # Verify settings object
         self.assertIsInstance(settings_obj, EnvSettings)

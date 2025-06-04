@@ -242,7 +242,7 @@ class TestBuilder(ut.TestCase):
         # Don't add any jobs to the queue
         key, info, job_folder = builder.build_one(recipe=recipe)
         
-        self.assertIsNotNone(key)
+        self.assertIsNone(key)
         self.assertIsNone(info)
         self.assertIsNone(job_folder)
 

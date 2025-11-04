@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mkwind"
-version = "24.09.05"
+version = "25.11.03"
 description = "mkwind is a job building/submission automator companion to mkite"
 authors = [{name = "Daniel Schwalbe-Koda", email = "dskoda@ucla.edu"}]
 readme = "README.md"

@@ -10,9 +10,9 @@ from .base import Scheduler, SchedulerJob
 LOCAL_JOB_IDENTIFIER = "LocalJob_mkwind"
 
 class LocalScheduler(Scheduler):
-    TEMPLATE = Template.from_name("slurm.sh")
+    TEMPLATE = Template.from_name("local.sh")
     SUBMIT_CMD = f"exec -a {LOCAL_JOB_IDENTIFIER} bash"
-    STATUS_CMD = f"ps aux | grep \"exec -a {LOCAL_JOB_IDENTIFIER}\" | grep -v grep | awk '{print $2}'"
+    STATUS_CMD = f"ps aux | grep \"exec -a {LOCAL_JOB_IDENTIFIER}\" | grep -v grep | awk '{{print $2}}'"
 
     def submit_job(self, job_folder: os.PathLike):
         name = os.path.basename(job_folder)

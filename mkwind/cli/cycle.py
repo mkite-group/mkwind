@@ -1,4 +1,5 @@
 import os
+import sys
 
 import click
 from mkite_core.models import JobInfo, Status
@@ -12,7 +13,13 @@ from mkwind.user.settings import get_settings
 
 
 @click.command("cycle")
-@click.argument("recipe", type=str)
+@click.argument(
+    "-r",
+    "--recipe",
+    type=str,
+    default=none,
+    help="name of the recipe to run. If not provided, runs any of the allowed jobs/recipes",
+)
 @click.option(
     "-s",
     "--settings",
@@ -82,6 +89,14 @@ def _get_managers(settings, dst):
 
 
 def _run_cycle(builder, pproc, recipe):
+    if recipe is None:
+        available_recipes = builder.get_src_queues(allowed_only=True)
+        if len(available_recipes) == 0:
+            print(f"INFO: No recipe available. Terminating.")
+            sys.exit(0)
+
+        recipe = available_recipes[0]
+
     # 1. Builds the job onto a new folder
     key, info, folder = builder.build_one(recipe)
 

@@ -13,11 +13,11 @@ from mkwind.user.settings import get_settings
 
 
 @click.command("cycle")
-@click.argument(
+@click.option(
     "-r",
     "--recipe",
     type=str,
-    default=none,
+    default=None,
     help="name of the recipe to run. If not provided, runs any of the allowed jobs/recipes",
 )
 @click.option(
